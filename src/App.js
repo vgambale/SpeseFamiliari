@@ -142,7 +142,9 @@ const App = {
     function eliminaMovimento(id) {
       movimenti.value = movimenti.value.filter(m => m.id !== id)
       salvaSuServer()
-    }// ID Utente - in una app reale utilizzeresti un sistema di autenticazione
+    }
+    
+    // ID Utente - in una app reale utilizzeresti un sistema di autenticazione
     const userId = ref(localStorage.getItem('speseFamiliari_userId') || null)
     const isLoading = ref(false)
     const errorMessage = ref('')
@@ -267,10 +269,10 @@ const App = {
     onMounted(() => {
       creaUserId()
       caricaDalServer()
-    })
-
-    // Non usiamo più watch per l'auto-salvataggio poiché aggiungiMovimento, 
-    // modificaMovimento e eliminaMovimento chiamano già salvaSuServer()    return {
+    })    // Non usiamo più watch per l'auto-salvataggio poiché aggiungiMovimento, 
+    // modificaMovimento e eliminaMovimento chiamano già salvaSuServer()
+    
+    return {
       tabAttiva,
       movimenti,
       movimentiFiltrati,
