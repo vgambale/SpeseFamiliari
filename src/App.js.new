@@ -1,4 +1,4 @@
-// Componente App principaled
+// Componente App principale
 
 const App = {
   components: {
@@ -8,7 +8,7 @@ const App = {
     'import-export': ImportExport
   },
   setup() {
-    const { ref, computed, onMounted, watch } = Vue;
+    const { ref, computed, onMounted } = Vue;
     
     const tabAttiva = ref('dashboard');
     const movimenti = ref([]);
@@ -101,7 +101,8 @@ const App = {
       return getImportiPerPersona('uscita');
     });
 
-    function getImportiPerCategoria(tipo) {
+    // Funzioni di utilità per calcolare i riepiloghi
+    const getImportiPerCategoria = (tipo) => {
       const risultato = {};
       
       movimentiFiltrati.value
@@ -112,9 +113,9 @@ const App = {
         });
       
       return risultato;
-    }
+    };
 
-    function getImportiPerPersona(tipo) {
+    const getImportiPerPersona = (tipo) => {
       const risultato = {};
       
       movimentiFiltrati.value
@@ -125,27 +126,27 @@ const App = {
         });
       
       return risultato;
-    }
+    };
     
     // Funzioni CRUD
-    function aggiungiMovimento(movimento) {
+    const aggiungiMovimento = (movimento) => {
       movimento.id = uuid.v4();
       movimenti.value.unshift(movimento);
       salvaSuServer();
-    }
+    };
 
-    function modificaMovimento(id, datiAggiornati) {
+    const modificaMovimento = (id, datiAggiornati) => {
       const indice = movimenti.value.findIndex(m => m.id === id);
       if (indice !== -1) {
         movimenti.value[indice] = { ...datiAggiornati, id };
         salvaSuServer();
       }
-    }
+    };
 
-    function eliminaMovimento(id) {
+    const eliminaMovimento = (id) => {
       movimenti.value = movimenti.value.filter(m => m.id !== id);
       salvaSuServer();
-    }
+    };
     
     // ID Utente - ora solo per identificazione locale
     const userId = ref(localStorage.getItem('speseFamiliari_userId') || null);
@@ -153,15 +154,15 @@ const App = {
     const errorMessage = ref('');
     
     // Crea un ID utente se non esiste
-    function creaUserId() {
+    const creaUserId = () => {
       if (!userId.value) {
         userId.value = uuid.v4();
         localStorage.setItem('speseFamiliari_userId', userId.value);
       }
-    }
+    };
     
     // Funzioni per salvare su Netlify Functions
-    async function salvaSuServer() {
+    const salvaSuServer = async () => {
       // Tutti gli utenti condividono gli stessi dati ora
       isLoading.value = true;
       errorMessage.value = '';
@@ -184,7 +185,12 @@ const App = {
           throw new Error(data.error || 'Errore durante il salvataggio dei dati');
         }
         
-        // Backup in localStorage come fallback
+        // Se siamo in modalità locale (non Netlify), la funzione ci avvisa
+        if (data.localOnly) {
+          console.log("Funzione eseguita in modalità locale. Utilizzo localStorage.");
+        }
+        
+        // Backup in localStorage sempre (sia come fallback che per ambiente locale)
         localStorage.setItem('speseFamiliari', JSON.stringify(movimenti.value));
         
       } catch (err) {
@@ -196,9 +202,9 @@ const App = {
       } finally {
         isLoading.value = false;
       }
-    }
+    };
     
-    async function caricaDalServer() {      
+    const caricaDalServer = async () => {      
       isLoading.value = true;
       errorMessage.value = '';
       
@@ -221,9 +227,19 @@ const App = {
         
         const data = await response.json();
         
+        // Se riceviamo un messaggio che indica ambiente non-Netlify, usiamo localStorage
+        if (data.message && data.message.includes('ambiente non-Netlify')) {
+          console.log("Funzione serverless eseguita in ambiente locale. Utilizzo localStorage.");
+          caricaDaLocalStorage();
+          return;
+        }
+        
         if (data && Array.isArray(data.movimenti)) {
           console.log(`Dati caricati dal server: ${data.movimenti.length} movimenti`);
           movimenti.value = data.movimenti;
+          
+          // Aggiorniamo anche localStorage come backup
+          localStorage.setItem('speseFamiliari', JSON.stringify(movimenti.value));
         } else {
           console.warn("Formato dati non valido ricevuto dal server", data);
           movimenti.value = [];
@@ -239,10 +255,10 @@ const App = {
       } finally {
         isLoading.value = false;
       }
-    }
+    };
 
     // Funzione di fallback per localStorage
-    function caricaDaLocalStorage() {
+    const caricaDaLocalStorage = () => {
       try {
         const dati = localStorage.getItem('speseFamiliari');
         if (dati) {
@@ -251,24 +267,24 @@ const App = {
       } catch (err) {
         console.error('Errore nel caricamento dei dati da localStorage', err);
       }
-    }
+    };
     
     // Importa ed esporta
-    function importaDatiJSON(dati) {
+    const importaDatiJSON = (dati) => {
       try {
         movimenti.value = dati;
         salvaSuServer();
       } catch (err) {
         console.error('Errore nell\'importazione dei dati', err);
       }
-    }
+    };
 
-    function esportaDatiJSON() {
+    const esportaDatiJSON = () => {
       return JSON.stringify(movimenti.value, null, 2);
-    }
+    };
 
     // Gestione filtri
-    function resetFiltri() {
+    const resetFiltri = () => {
       filtri.value = {
         tipo: '',
         categoria: '',
@@ -276,7 +292,7 @@ const App = {
         mese: '',
         anno: ''
       };
-    }
+    };
     
     // Caricamento iniziale
     onMounted(() => {

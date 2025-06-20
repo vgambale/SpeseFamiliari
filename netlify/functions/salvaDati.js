@@ -29,18 +29,38 @@ exports.handler = async (event, context) => {
     }
 
     // Estrai i dati dal corpo della richiesta
-    const data = JSON.parse(event.body);    // Accedi al Blobs Store
-    const store = getStore({ name: 'spese-familiari' });
+    const data = JSON.parse(event.body);
     
-    // Salva i dati con una chiave comune per tutti gli utenti
-    const key = 'dati-condivisi';
-    await store.set(key, JSON.stringify(data.movimenti));
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ success: true, message: 'Dati salvati con successo' })
-    };
+    // Accedi al Blobs Store - configurazione per supportare l'ambiente di produzione e locale
+    let store;
+    
+    // Controlla se siamo in ambiente Netlify
+    if (process.env.NETLIFY && process.env.NETLIFY === 'true') {
+      // In ambiente Netlify, getStore funzionerà automaticamente
+      store = getStore({ name: 'spese-familiari' });
+      
+      // Salva i dati con una chiave comune per tutti gli utenti
+      const key = 'dati-condivisi';
+      await store.set(key, JSON.stringify(data.movimenti));
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ success: true, message: 'Dati salvati con successo' })
+      };
+    } else {
+      // Per test locali, restituisci successo ma indica che i dati devono essere salvati in localStorage
+      console.log("Ambiente non-Netlify rilevato. I dati dovranno essere salvati in localStorage.");
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ 
+          success: true, 
+          message: 'Ambiente non-Netlify. Usa localStorage per test locali',
+          localOnly: true
+        })
+      };
+    }
   } catch (error) {
     console.error('Errore durante il salvataggio dei dati:', error);
     

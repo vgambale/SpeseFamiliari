@@ -26,8 +26,27 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ error: 'Metodo non permesso' })
       };
-    }    // Accedi al Blobs Store
-    const store = getStore({ name: 'spese-familiari' });
+    }
+    
+    // Accedi al Blobs Store - configurazione per supportare l'ambiente di produzione e locale
+    let store;
+    
+    // Controlla se siamo in ambiente Netlify
+    if (process.env.NETLIFY && process.env.NETLIFY === 'true') {
+      // In ambiente Netlify, getStore funzionerà automaticamente
+      store = getStore({ name: 'spese-familiari' });
+    } else {
+      // Per test locali, usa localStorage come fallback
+      console.log("Ambiente non-Netlify rilevato. Usando fallback localStorage.");
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ 
+          movimenti: [], 
+          message: 'Dati forniti da localStorage (ambiente non-Netlify)'
+        })
+      };
+    }
     
     try {
       // Usa una chiave comune per tutti gli utenti
@@ -47,7 +66,8 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         headers,
         body: JSON.stringify({ movimenti: JSON.parse(movimenti) })
-      };    } catch (error) {
+      };
+    } catch (error) {
       // Se il blob non esiste, restituisci un array vuoto
       console.log("Dati non trovati nel database condiviso");
       return {
