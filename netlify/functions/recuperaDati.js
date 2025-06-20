@@ -31,15 +31,30 @@ exports.handler = async (event, context) => {
     // Accedi al Blobs Store - configurazione per supportare l'ambiente di produzione e locale
     let store;
       // In Netlify, getStore funzionerà in ogni caso anche se dovesse fallire
-    // cerchiamo di gestire l'errore in modo più elegante
+    // cerchiamo di gestire l'errore in modo più elegante    // Otteniamo siteID e token dall'ambiente
+    const siteID = process.env.SITE_ID || process.env.NETLIFY_SITE_ID;
+    const token = process.env.NETLIFY_AUTH_TOKEN;
+    
+    // Log delle variabili d'ambiente per il debug
+    console.log("SITE_ID:", siteID ? "Presente" : "Mancante");
+    console.log("NETLIFY_AUTH_TOKEN:", token ? "Presente" : "Mancante");
+    console.log("NETLIFY env:", process.env.NETLIFY);
+    console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV);
+    console.log("CONTEXT env:", process.env.CONTEXT);
+    
     try {
-      store = getStore({ name: 'spese-familiari' });
+      // Configuriamo lo store con siteID e token se disponibili
+      const storeOptions = { 
+        name: 'spese-familiari',
+      };
+      
+      // Aggiungiamo siteID e token solo se disponibili
+      if (siteID) storeOptions.siteID = siteID;
+      if (token) storeOptions.token = token;
+      
+      store = getStore(storeOptions);
     } catch (storeError) {
       console.log("Errore nella creazione dello store:", storeError);
-      // Forniamo informazioni dettagliate sulle variabili d'ambiente per debug
-      console.log("NETLIFY env:", process.env.NETLIFY);
-      console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV);
-      console.log("CONTEXT env:", process.env.CONTEXT);
       
       return {
         statusCode: 200,

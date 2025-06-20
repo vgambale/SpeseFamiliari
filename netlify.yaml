@@ -1,7 +1,9 @@
 build:
   publish: "/"
   functions: "netlify/functions"
-  command: "cd netlify/functions && npm install"
+  command: "npm ci && npm run build"
+  environment:
+    NETLIFY_BLOBS_ENABLED: "true"
 
 functions:
   '*':
@@ -11,3 +13,9 @@ redirects:
   - from: /api/*
     to: /.netlify/functions/:splat
     status: 200
+
+plugins:
+  - package: '@netlify/plugin-functions-install-core'
+  - package: '@netlify/blobs'
+    inputs:
+      enabled: true

@@ -2,9 +2,11 @@
   "name": "spese-familiari-functions",
   "version": "1.0.0",
   "description": "Netlify Functions per Spese Familiari",
-  "main": "index.js",  "dependencies": {
+  "main": "index.js",
+  "dependencies": {
     "node-fetch": "^2.6.7",
-    "@netlify/blobs": "^6.2.0"
+    "@netlify/blobs": "^6.3.0",
+    "@netlify/functions": "^2.0.0"
   },
   "scripts": {
     "build": "echo 'No build required'"

@@ -32,10 +32,28 @@ exports.handler = async (event, context) => {
     const data = JSON.parse(event.body);
       // Accedi al Blobs Store
     let store;
+      // Otteniamo siteID e token dall'ambiente
+    const siteID = process.env.SITE_ID || process.env.NETLIFY_SITE_ID;
+    const token = process.env.NETLIFY_AUTH_TOKEN;
+    
+    // Log delle variabili d'ambiente per il debug
+    console.log("SITE_ID:", siteID ? "Presente" : "Mancante");
+    console.log("NETLIFY_AUTH_TOKEN:", token ? "Presente" : "Mancante");
+    console.log("NETLIFY env:", process.env.NETLIFY);
+    console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV);
+    console.log("CONTEXT env:", process.env.CONTEXT);
     
     try {
-      // In Netlify, getStore dovrebbe funzionare normalmente
-      store = getStore({ name: 'spese-familiari' });
+      // Configuriamo lo store con siteID e token se disponibili
+      const storeOptions = { 
+        name: 'spese-familiari',
+      };
+      
+      // Aggiungiamo siteID e token solo se disponibili
+      if (siteID) storeOptions.siteID = siteID;
+      if (token) storeOptions.token = token;
+      
+      store = getStore(storeOptions);
       
       // Salva i dati con una chiave comune per tutti gli utenti
       const key = 'dati-condivisi';
@@ -49,9 +67,6 @@ exports.handler = async (event, context) => {
     } catch (storeError) {
       // Log informazioni utili per il debug
       console.log("Errore nella gestione dello store:", storeError);
-      console.log("NETLIFY env:", process.env.NETLIFY);
-      console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV); 
-      console.log("CONTEXT env:", process.env.CONTEXT);
       
       return {
         statusCode: 200,

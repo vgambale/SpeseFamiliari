@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Applicazione per la gestione delle spese familiari",
   "scripts": {
-    "build": "cd netlify/functions && npm install"
+    "build": "cd netlify/functions && npm ci",
+    "dev": "netlify dev"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "netlify-cli": "^15.0.0"
+  }
 }

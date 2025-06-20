@@ -8,6 +8,12 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Abilita l'estensione Netlify Blobs
-[template.environment]
+# Configurazione delle funzionalità Netlify
+[functions]
+  # Attiva esplicitamente Netlify Blobs per le funzioni
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/**"]
+
+[build.environment]
+  # Abilita esplicitamente Netlify Blobs
   NETLIFY_BLOBS_ENABLED = "true"
