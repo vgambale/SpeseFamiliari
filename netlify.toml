@@ -7,3 +7,7 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Abilita l'estensione Netlify Blobs
+[template.environment]
+  NETLIFY_BLOBS_ENABLED = "true"

@@ -30,13 +30,11 @@ exports.handler = async (event, context) => {
 
     // Estrai i dati dal corpo della richiesta
     const data = JSON.parse(event.body);
-    
-    // Accedi al Blobs Store - configurazione per supportare l'ambiente di produzione e locale
+      // Accedi al Blobs Store
     let store;
     
-    // Controlla se siamo in ambiente Netlify
-    if (process.env.NETLIFY && process.env.NETLIFY === 'true') {
-      // In ambiente Netlify, getStore funzionerà automaticamente
+    try {
+      // In Netlify, getStore dovrebbe funzionare normalmente
       store = getStore({ name: 'spese-familiari' });
       
       // Salva i dati con una chiave comune per tutti gli utenti
@@ -46,18 +44,23 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ success: true, message: 'Dati salvati con successo' })
+        body: JSON.stringify({ success: true, message: 'Dati salvati con successo su Netlify Blobs' })
       };
-    } else {
-      // Per test locali, restituisci successo ma indica che i dati devono essere salvati in localStorage
-      console.log("Ambiente non-Netlify rilevato. I dati dovranno essere salvati in localStorage.");
+    } catch (storeError) {
+      // Log informazioni utili per il debug
+      console.log("Errore nella gestione dello store:", storeError);
+      console.log("NETLIFY env:", process.env.NETLIFY);
+      console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV); 
+      console.log("CONTEXT env:", process.env.CONTEXT);
+      
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({ 
-          success: true, 
-          message: 'Ambiente non-Netlify. Usa localStorage per test locali',
-          localOnly: true
+          success: false, 
+          message: 'Impossibile salvare su Netlify Blobs. Usa localStorage.',
+          localOnly: true,
+          error: storeError.message
         })
       };
     }

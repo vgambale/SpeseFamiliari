@@ -30,20 +30,24 @@ exports.handler = async (event, context) => {
     
     // Accedi al Blobs Store - configurazione per supportare l'ambiente di produzione e locale
     let store;
-    
-    // Controlla se siamo in ambiente Netlify
-    if (process.env.NETLIFY && process.env.NETLIFY === 'true') {
-      // In ambiente Netlify, getStore funzionerà automaticamente
+      // In Netlify, getStore funzionerà in ogni caso anche se dovesse fallire
+    // cerchiamo di gestire l'errore in modo più elegante
+    try {
       store = getStore({ name: 'spese-familiari' });
-    } else {
-      // Per test locali, usa localStorage come fallback
-      console.log("Ambiente non-Netlify rilevato. Usando fallback localStorage.");
+    } catch (storeError) {
+      console.log("Errore nella creazione dello store:", storeError);
+      // Forniamo informazioni dettagliate sulle variabili d'ambiente per debug
+      console.log("NETLIFY env:", process.env.NETLIFY);
+      console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV);
+      console.log("CONTEXT env:", process.env.CONTEXT);
+      
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({ 
           movimenti: [], 
-          message: 'Dati forniti da localStorage (ambiente non-Netlify)'
+          message: 'Impossibile connettersi allo store Netlify Blobs. Usando localStorage.',
+          error: storeError.message
         })
       };
     }
