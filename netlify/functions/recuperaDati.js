@@ -26,25 +26,13 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ error: 'Metodo non permesso' })
       };
-    }
-
-    // Estrai l'ID utente dalla query
-    const params = new URLSearchParams(event.queryStringParameters);
-    const userId = params.get('userId') || event.queryStringParameters.userId;
-    
-    if (!userId) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'ID utente mancante' })
-      };
     }    // Accedi al Blobs Store
     const client = createClient(context);
     const store = client.get('spese-familiari');
     
     try {
-      // Recupera i dati associati all'ID utente
-      const key = `user-${userId}`;
+      // Usa una chiave comune per tutti gli utenti
+      const key = 'dati-condivisi';
       const movimenti = await store.get(key);
       
       // Se non ci sono dati, restituisci un array vuoto
@@ -60,10 +48,9 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         headers,
         body: JSON.stringify({ movimenti: JSON.parse(movimenti) })
-      };
-    } catch (error) {
+      };    } catch (error) {
       // Se il blob non esiste, restituisci un array vuoto
-      console.log("Dati non trovati per l'utente:", userId);
+      console.log("Dati non trovati nel database condiviso");
       return {
         statusCode: 200,
         headers,

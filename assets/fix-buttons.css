@@ -1,0 +1,29 @@
+/* Fix per i bottoni non cliccabili */
+button, .btn, [role="button"] {
+  position: relative;
+  z-index: 1;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.tab {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Fix per gli elementi cliccabili in generale */
+a, select, input, checkbox, radio, option, .clickable {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Feedback visivo per gli elementi interattivi */
+button:hover, .btn:hover, .tab:hover, [role="button"]:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:active, .btn:active, .tab:active, [role="button"]:active {
+  opacity: 1;
+  transform: translateY(1px);
+}

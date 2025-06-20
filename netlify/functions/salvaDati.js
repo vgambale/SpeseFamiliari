@@ -30,21 +30,12 @@ exports.handler = async (event, context) => {
 
     // Estrai i dati dal corpo della richiesta
     const data = JSON.parse(event.body);
-    
-    // Valida che ci sia un ID utente
-    const userId = data.userId;
-    if (!userId) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'ID utente mancante' })
-      };
-    }    // Accedi al Blobs Store
+      // Accedi al Blobs Store
     const client = createClient(context);
     const store = client.get('spese-familiari');
     
-    // Salva i dati associati all'ID utente
-    const key = `user-${userId}`;
+    // Salva i dati con una chiave comune per tutti gli utenti
+    const key = 'dati-condivisi';
     await store.set(key, JSON.stringify(data.movimenti));
 
     return {
