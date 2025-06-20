@@ -26,8 +26,7 @@ const FormMovimento = {
     ]
     
     const oggi = new Date().toISOString().split('T')[0]
-    
-    // Stato form
+      // Stato form
     const tipo = ref(props.movimentoDaModificare?.tipo || 'uscita')
     const categoria = ref(props.movimentoDaModificare?.categoria || '')
     const categoriaPersonalizzata = ref('')
@@ -36,6 +35,7 @@ const FormMovimento = {
     const frequenza = ref(props.movimentoDaModificare?.frequenza || 'una_tantum')
     const persona = ref(props.movimentoDaModificare?.persona || '')
     const personaPersonalizzata = ref('')
+    const descrizione = ref(props.movimentoDaModificare?.descrizione || '')
     
     // Opzioni per le categorie e persone, unite tra quelle esistenti e predefinite
     const opzioniCategorie = computed(() => {
@@ -46,8 +46,7 @@ const FormMovimento = {
     const opzioniPersone = computed(() => {
       return props.persone || []
     })
-    
-    // Funzione di validazione
+      // Funzione di validazione
     const formValido = computed(() => {
       return (
         tipo.value &&
@@ -55,11 +54,11 @@ const FormMovimento = {
         importo.value > 0 &&
         data.value &&
         frequenza.value &&
-        (persona.value || personaPersonalizzata.value)
+        (persona.value || personaPersonalizzata.value) &&
+        descrizione.value.trim() !== '' // La descrizione è obbligatoria
       )
     })
-    
-    // Funzione di salvataggio
+      // Funzione di salvataggio
     function salvaMovimento() {
       if (!formValido.value) return
       
@@ -69,7 +68,8 @@ const FormMovimento = {
         importo: parseFloat(importo.value),
         data: data.value,
         frequenza: frequenza.value,
-        persona: persona.value || personaPersonalizzata.value
+        persona: persona.value || personaPersonalizzata.value,
+        descrizione: descrizione.value
       }
       
       emit('salva', nuovoMovimento)
@@ -83,6 +83,7 @@ const FormMovimento = {
       frequenza.value = 'una_tantum'
       persona.value = ''
       personaPersonalizzata.value = ''
+      descrizione.value = ''
     }
     
     return {
@@ -110,36 +111,27 @@ const FormMovimento = {
       </div>
       
       <div class="card-body">
-        <form @submit.prevent="salvaMovimento">
-          <!-- Tipo movimento -->
+        <form @submit.prevent="salvaMovimento">          <!-- Tipo movimento -->
           <div class="form-group">
             <label>Tipo di movimento</label>
-            <div style="display: flex; gap: 1rem;">
-              <label style="display: inline-flex; align-items: center; cursor: pointer;">
-                <input 
-                  type="radio" 
-                  name="tipo" 
-                  value="entrata" 
-                  v-model="tipo" 
-                  style="margin-right: 0.5rem;"
-                />
-                <span class="text-success">
-                  <i class="fas fa-arrow-down"></i> Entrata
-                </span>
-              </label>
+            <div class="btn-group tipo-movimento">
+              <button 
+                type="button" 
+                class="btn btn-tipo" 
+                :class="{'btn-success': tipo === 'entrata', 'btn-outline': tipo !== 'entrata'}"
+                @click="tipo = 'entrata'"
+              >
+                <i class="fas fa-arrow-down"></i> Entrata
+              </button>
               
-              <label style="display: inline-flex; align-items: center; cursor: pointer;">
-                <input 
-                  type="radio" 
-                  name="tipo" 
-                  value="uscita" 
-                  v-model="tipo" 
-                  style="margin-right: 0.5rem;"
-                />
-                <span class="text-danger">
-                  <i class="fas fa-arrow-up"></i> Uscita
-                </span>
-              </label>
+              <button 
+                type="button" 
+                class="btn btn-tipo" 
+                :class="{'btn-danger': tipo === 'uscita', 'btn-outline': tipo !== 'uscita'}"
+                @click="tipo = 'uscita'"
+              >
+                <i class="fas fa-arrow-up"></i> Uscita
+              </button>
             </div>
           </div>
           
@@ -200,8 +192,7 @@ const FormMovimento = {
               <option value="annuale">Annuale</option>
             </select>
           </div>
-          
-          <!-- Persona -->
+            <!-- Persona -->
           <div class="form-row">
             <div class="form-group">
               <label for="persona">Persona</label>
@@ -220,6 +211,18 @@ const FormMovimento = {
                 placeholder="Es: Mario"
               />
             </div>
+          </div>
+          
+          <!-- Descrizione -->
+          <div class="form-group">
+            <label for="descrizione">Descrizione</label>
+            <input 
+              type="text" 
+              id="descrizione" 
+              v-model="descrizione" 
+              placeholder="Es: Spesa settimanale al supermercato" 
+              required
+            />
           </div>
           
           <!-- Pulsanti -->

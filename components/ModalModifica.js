@@ -9,13 +9,13 @@ const ModalModifica = {
   },
   emits: ['chiudi', 'salva'],  setup(props, { emit }) {
     const { ref, computed } = Vue;
-    
-    const tipo = ref(props.movimento.tipo)
+      const tipo = ref(props.movimento.tipo)
     const categoria = ref(props.movimento.categoria)
     const importo = ref(props.movimento.importo)
     const data = ref(props.movimento.data)
     const frequenza = ref(props.movimento.frequenza)
     const persona = ref(props.movimento.persona)
+    const descrizione = ref(props.movimento.descrizione || '')
     
     const formValido = computed(() => {
       return (
@@ -24,21 +24,22 @@ const ModalModifica = {
         importo.value > 0 &&
         data.value &&
         frequenza.value &&
-        persona.value
+        persona.value &&
+        descrizione.value.trim() !== ''
       )
     })
     
     function salvaModifiche() {
       if (!formValido.value) return
-      
-      const movimentoModificato = {
+        const movimentoModificato = {
         id: props.movimento.id,
         tipo: tipo.value,
         categoria: categoria.value,
         importo: parseFloat(importo.value),
         data: data.value,
         frequenza: frequenza.value,
-        persona: persona.value
+        persona: persona.value,
+        descrizione: descrizione.value
       }
       
       emit('salva', movimentoModificato)
@@ -47,14 +48,14 @@ const ModalModifica = {
     function chiudiModal() {
       emit('chiudi')
     }
-    
-    return {
+      return {
       tipo,
       categoria,
       importo,
       data,
       frequenza,
       persona,
+      descrizione,
       formValido,
       salvaModifiche,
       chiudiModal
@@ -69,36 +70,27 @@ const ModalModifica = {
         </div>
         
         <div class="modal-body">
-          <form @submit.prevent="salvaModifiche">
-            <!-- Tipo movimento -->
+          <form @submit.prevent="salvaModifiche">            <!-- Tipo movimento -->
             <div class="form-group">
               <label>Tipo di movimento</label>
-              <div style="display: flex; gap: 1rem;">
-                <label style="display: inline-flex; align-items: center; cursor: pointer;">
-                  <input 
-                    type="radio" 
-                    name="tipo" 
-                    value="entrata" 
-                    v-model="tipo" 
-                    style="margin-right: 0.5rem;"
-                  />
-                  <span class="text-success">
-                    <i class="fas fa-arrow-down"></i> Entrata
-                  </span>
-                </label>
+              <div class="btn-group tipo-movimento">
+                <button 
+                  type="button" 
+                  class="btn btn-tipo" 
+                  :class="{'btn-success': tipo === 'entrata', 'btn-outline': tipo !== 'entrata'}"
+                  @click="tipo = 'entrata'"
+                >
+                  <i class="fas fa-arrow-down"></i> Entrata
+                </button>
                 
-                <label style="display: inline-flex; align-items: center; cursor: pointer;">
-                  <input 
-                    type="radio" 
-                    name="tipo" 
-                    value="uscita" 
-                    v-model="tipo" 
-                    style="margin-right: 0.5rem;"
-                  />
-                  <span class="text-danger">
-                    <i class="fas fa-arrow-up"></i> Uscita
-                  </span>
-                </label>
+                <button 
+                  type="button" 
+                  class="btn btn-tipo" 
+                  :class="{'btn-danger': tipo === 'uscita', 'btn-outline': tipo !== 'uscita'}"
+                  @click="tipo = 'uscita'"
+                >
+                  <i class="fas fa-arrow-up"></i> Uscita
+                </button>
               </div>
             </div>
             
@@ -148,14 +140,25 @@ const ModalModifica = {
                 <option value="annuale">Annuale</option>
               </select>
             </div>
-            
-            <!-- Persona -->
+              <!-- Persona -->
             <div class="form-group">
               <label for="persona-mod">Persona</label>
               <input 
                 type="text" 
                 id="persona-mod" 
                 v-model="persona" 
+                required
+              />
+            </div>
+            
+            <!-- Descrizione -->
+            <div class="form-group">
+              <label for="descrizione-mod">Descrizione</label>
+              <input 
+                type="text" 
+                id="descrizione-mod" 
+                v-model="descrizione" 
+                placeholder="Es: Spesa settimanale al supermercato" 
                 required
               />
             </div>

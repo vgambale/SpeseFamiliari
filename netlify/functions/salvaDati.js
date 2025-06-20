@@ -42,9 +42,23 @@ exports.handler = async (event, context) => {
     console.log("NETLIFY env:", process.env.NETLIFY);
     console.log("NETLIFY_DEV env:", process.env.NETLIFY_DEV);
     console.log("CONTEXT env:", process.env.CONTEXT);
-    
-    try {
-      // Configuriamo lo store con siteID e token se disponibili
+      try {
+      // Se manca il token di autenticazione, non possiamo usare Netlify Blobs
+      if (!token) {
+        console.log("NETLIFY_AUTH_TOKEN mancante. È necessario configurarlo nelle variabili d'ambiente.");
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ 
+            success: false, 
+            message: 'Manca NETLIFY_AUTH_TOKEN. Usa localStorage temporaneamente e configura il token.',
+            localOnly: true,
+            error: 'Aggiungi NETLIFY_AUTH_TOKEN nelle variabili d\'ambiente su Netlify'
+          })
+        };
+      }
+      
+      // Configuriamo lo store con siteID e token
       const storeOptions = { 
         name: 'spese-familiari',
       };

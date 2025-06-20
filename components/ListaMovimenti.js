@@ -147,9 +147,11 @@ const ListaMovimenti = {
               </th>
               <th @click="cambiaOrdinamento('data')">
                 Data <i class="fas" :class="iconaOrdinamento('data')"></i>
-              </th>
-              <th @click="cambiaOrdinamento('categoria')">
+              </th>              <th @click="cambiaOrdinamento('categoria')">
                 Categoria <i class="fas" :class="iconaOrdinamento('categoria')"></i>
+              </th>
+              <th @click="cambiaOrdinamento('descrizione')">
+                Descrizione <i class="fas" :class="iconaOrdinamento('descrizione')"></i>
               </th>
               <th @click="cambiaOrdinamento('importo')" class="text-right">
                 Importo <i class="fas" :class="iconaOrdinamento('importo')"></i>
@@ -176,9 +178,9 @@ const ListaMovimenti = {
                   ></i>
                   {{ movimento.tipo === 'entrata' ? 'Entrata' : 'Uscita' }}
                 </span>
-              </td>
-              <td>{{ formattaData(movimento.data) }}</td>
+              </td>              <td>{{ formattaData(movimento.data) }}</td>
               <td>{{ movimento.categoria }}</td>
+              <td>{{ movimento.descrizione || '-' }}</td>
               <td class="text-right">
                 <span :class="movimento.tipo === 'entrata' ? 'text-success' : 'text-danger'">
                   {{ formattaImporto(movimento.importo) }}
