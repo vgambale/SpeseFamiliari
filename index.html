@@ -54,17 +54,25 @@
 </head>
 <body>
   <div id="app"></div>
-  <!-- Librerie esterne -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
-    <!-- Componenti (ordine corretto di caricamento) -->
+  <!-- Librerie esterne -->  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+  
+  <!-- Componenti (ordine corretto di caricamento considerando le dipendenze) -->
+  <!-- Prima i componenti indipendenti -->
   <script src="./components/ModalModifica.js"></script>
   <script src="./components/FormMovimento.js"></script>
   <script src="./components/ImportExport.js"></script>
+    <!-- Componenti che dipendono da altri -->
   <script src="./components/ListaMovimenti.js"></script>
   <script src="./components/DashboardView.js"></script>
-    <!-- App principale (dopo tutti i componenti) -->
+    <!-- Registrazione componenti globali -->
   <script src="./src/components.js"></script>
+  
+  <!-- Verifica caricamento componenti -->
+  <script src="./assets/component-checker.js"></script>
+  
+  <!-- App principale (dopo tutti i componenti) -->
   <script src="./src/App.js"></script>
   <script src="./src/main.js"></script>
 </body>

@@ -4,7 +4,7 @@ const App = {
   components: {
     'form-movimento': FormMovimento,
     'lista-movimenti': ListaMovimenti,
-    'dashboard': DashboardView,
+    'dashboard-view': DashboardView,
     'import-export': ImportExport
   },
   setup() {
@@ -433,10 +433,9 @@ const App = {
           </div>
         </div>
       </div>
-      
-      <!-- Dashboard -->
+        <!-- Dashboard -->
       <div v-if="tabAttiva === 'dashboard'">
-        <dashboard
+        <dashboard-view
           :totale-entrate="totaleEntrate"
           :totale-uscite="totaleUscite"
           :saldo="saldo"
