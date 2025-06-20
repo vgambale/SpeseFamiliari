@@ -1,0 +1,239 @@
+// Componente FormMovimento
+
+const FormMovimento = {
+  props: {
+    categorie: Array,
+    persone: Array,
+    movimentoDaModificare: {
+      type: Object,
+      default: null
+    }
+  },
+  emits: ['salva'],  setup(props, { emit }) {
+    const { ref, computed } = Vue;
+    
+    const categoriePreDefinite = [
+      'Affitto', 
+      'Bollette', 
+      'Spesa',
+      'Trasporti', 
+      'Salute', 
+      'Svago', 
+      'Abbigliamento', 
+      'Stipendio', 
+      'Regalo', 
+      'Altro'
+    ]
+    
+    const oggi = new Date().toISOString().split('T')[0]
+    
+    // Stato form
+    const tipo = ref(props.movimentoDaModificare?.tipo || 'uscita')
+    const categoria = ref(props.movimentoDaModificare?.categoria || '')
+    const categoriaPersonalizzata = ref('')
+    const importo = ref(props.movimentoDaModificare?.importo || '')
+    const data = ref(props.movimentoDaModificare?.data || oggi)
+    const frequenza = ref(props.movimentoDaModificare?.frequenza || 'una_tantum')
+    const persona = ref(props.movimentoDaModificare?.persona || '')
+    const personaPersonalizzata = ref('')
+    
+    // Opzioni per le categorie e persone, unite tra quelle esistenti e predefinite
+    const opzioniCategorie = computed(() => {
+      const categorieEsistenti = props.categorie || []
+      return [...new Set([...categoriePreDefinite, ...categorieEsistenti])]
+    })
+    
+    const opzioniPersone = computed(() => {
+      return props.persone || []
+    })
+    
+    // Funzione di validazione
+    const formValido = computed(() => {
+      return (
+        tipo.value &&
+        (categoria.value || categoriaPersonalizzata.value) &&
+        importo.value > 0 &&
+        data.value &&
+        frequenza.value &&
+        (persona.value || personaPersonalizzata.value)
+      )
+    })
+    
+    // Funzione di salvataggio
+    function salvaMovimento() {
+      if (!formValido.value) return
+      
+      const nuovoMovimento = {
+        tipo: tipo.value,
+        categoria: categoria.value || categoriaPersonalizzata.value,
+        importo: parseFloat(importo.value),
+        data: data.value,
+        frequenza: frequenza.value,
+        persona: persona.value || personaPersonalizzata.value
+      }
+      
+      emit('salva', nuovoMovimento)
+      
+      // Reset form
+      tipo.value = 'uscita'
+      categoria.value = ''
+      categoriaPersonalizzata.value = ''
+      importo.value = ''
+      data.value = oggi
+      frequenza.value = 'una_tantum'
+      persona.value = ''
+      personaPersonalizzata.value = ''
+    }
+    
+    return {
+      tipo,
+      categoria,
+      categoriaPersonalizzata,
+      importo,
+      data,
+      frequenza,
+      persona,
+      personaPersonalizzata,
+      opzioniCategorie,
+      opzioniPersone,
+      formValido,
+      salvaMovimento
+    }
+  },
+  template: `
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <i class="fas" :class="tipo === 'entrata' ? 'fa-arrow-down' : 'fa-arrow-up'"></i>
+          {{ tipo === 'entrata' ? 'Nuova Entrata' : 'Nuova Uscita' }}
+        </h2>
+      </div>
+      
+      <div class="card-body">
+        <form @submit.prevent="salvaMovimento">
+          <!-- Tipo movimento -->
+          <div class="form-group">
+            <label>Tipo di movimento</label>
+            <div style="display: flex; gap: 1rem;">
+              <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                <input 
+                  type="radio" 
+                  name="tipo" 
+                  value="entrata" 
+                  v-model="tipo" 
+                  style="margin-right: 0.5rem;"
+                />
+                <span class="text-success">
+                  <i class="fas fa-arrow-down"></i> Entrata
+                </span>
+              </label>
+              
+              <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                <input 
+                  type="radio" 
+                  name="tipo" 
+                  value="uscita" 
+                  v-model="tipo" 
+                  style="margin-right: 0.5rem;"
+                />
+                <span class="text-danger">
+                  <i class="fas fa-arrow-up"></i> Uscita
+                </span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Categoria -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="categoria">Categoria</label>
+              <select id="categoria" v-model="categoria">
+                <option value="">Seleziona o inserisci manualmente</option>
+                <option v-for="cat in opzioniCategorie" :value="cat">{{ cat }}</option>
+              </select>
+            </div>
+            
+            <div class="form-group" v-if="!categoria">
+              <label for="categoriaPersonalizzata">Categoria personalizzata</label>
+              <input 
+                type="text" 
+                id="categoriaPersonalizzata" 
+                v-model="categoriaPersonalizzata" 
+                placeholder="Es: Palestra"
+              />
+            </div>
+          </div>
+          
+          <!-- Importo e Data -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="importo">Importo (€)</label>
+              <input 
+                type="number" 
+                id="importo" 
+                v-model="importo" 
+                placeholder="Es: 25.50" 
+                step="0.01" 
+                min="0.01"
+                required
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="data">Data</label>
+              <input 
+                type="date" 
+                id="data" 
+                v-model="data" 
+                required
+              />
+            </div>
+          </div>
+          
+          <!-- Frequenza -->
+          <div class="form-group">
+            <label for="frequenza">Frequenza</label>
+            <select id="frequenza" v-model="frequenza" required>
+              <option value="una_tantum">Una tantum</option>
+              <option value="giornaliera">Giornaliera</option>
+              <option value="mensile">Mensile</option>
+              <option value="annuale">Annuale</option>
+            </select>
+          </div>
+          
+          <!-- Persona -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="persona">Persona</label>
+              <select id="persona" v-model="persona">
+                <option value="">Seleziona o inserisci manualmente</option>
+                <option v-for="p in opzioniPersone" :value="p">{{ p }}</option>
+              </select>
+            </div>
+            
+            <div class="form-group" v-if="!persona">
+              <label for="personaPersonalizzata">Nome persona</label>
+              <input 
+                type="text" 
+                id="personaPersonalizzata" 
+                v-model="personaPersonalizzata" 
+                placeholder="Es: Mario"
+              />
+            </div>
+          </div>
+          
+          <!-- Pulsanti -->
+          <div class="form-group">
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              :disabled="!formValido"
+            >
+              <i class="fas fa-save"></i> Salva Movimento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `
+}

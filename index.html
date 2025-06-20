@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestione Spese Familiari</title>  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/favicon.css">
+  <!-- Font Awesome per le icone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  <!-- Font SF Pro (Apple system font) -->
+  <style>
+    @font-face {
+      font-family: 'SF Pro Text';
+      font-weight: 400;
+      src: local('San Francisco'), local('SF Pro Text'), local('.SFNSText-Regular');
+    }
+    @font-face {
+      font-family: 'SF Pro Text';
+      font-weight: 500;
+      src: local('San Francisco Medium'), local('SF Pro Text Medium'), local('.SFNSText-Medium');
+    }
+    @font-face {
+      font-family: 'SF Pro Text';
+      font-weight: 600;
+      src: local('San Francisco Semibold'), local('SF Pro Text Semibold'), local('.SFNSText-Semibold');
+    }
+    @font-face {
+      font-family: 'SF Pro Text';
+      font-weight: 700;
+      src: local('San Francisco Bold'), local('SF Pro Text Bold'), local('.SFNSText-Bold');
+    }
+    @font-face {
+      font-family: 'SF Pro Display';
+      font-weight: 400;
+      src: local('San Francisco Display'), local('SF Pro Display'), local('.SFNSDisplay-Regular');
+    }
+    @font-face {
+      font-family: 'SF Pro Display';
+      font-weight: 500;
+      src: local('San Francisco Display Medium'), local('SF Pro Display Medium'), local('.SFNSDisplay-Medium');
+    }
+    @font-face {
+      font-family: 'SF Pro Display';
+      font-weight: 600;
+      src: local('San Francisco Display Semibold'), local('SF Pro Display Semibold'), local('.SFNSDisplay-Semibold');
+    }
+    @font-face {
+      font-family: 'SF Pro Display';
+      font-weight: 700;
+      src: local('San Francisco Display Bold'), local('SF Pro Display Bold'), local('.SFNSDisplay-Bold');
+    }
+  </style>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <div id="app"></div>
+  <!-- Librerie esterne -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+    <!-- Componenti (ordine corretto di caricamento) -->
+  <script src="./components/ModalModifica.js"></script>
+  <script src="./components/FormMovimento.js"></script>
+  <script src="./components/ImportExport.js"></script>
+  <script src="./components/ListaMovimenti.js"></script>
+  <script src="./components/DashboardView.js"></script>
+    <!-- App principale (dopo tutti i componenti) -->
+  <script src="./src/components.js"></script>
+  <script src="./src/App.js"></script>
+  <script src="./src/main.js"></script>
+</body>
+</html>

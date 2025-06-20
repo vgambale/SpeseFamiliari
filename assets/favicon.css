@@ -1,0 +1,20 @@
+/* Favicon data in formato base64 */
+@media (prefers-color-scheme: light) {
+  :root {
+    --favicon-color: #0071e3;
+    --favicon-bg: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --favicon-color: #0071e3;
+    --favicon-bg: #1d1d1f;
+  }
+}
+
+/* Favicon dinamica che supporta dark/light mode */
+.favicon-svg {
+  stroke: var(--favicon-color);
+  fill: var(--favicon-bg);
+}
