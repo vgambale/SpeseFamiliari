@@ -208,9 +208,10 @@ const ListaMovimenti = {
               </td>
             </tr>
           </tbody>
-        </table>
-      </div>
-      
+        </table>      </div>
+    </div>
+    
+    <teleport to="body">
       <!-- Modal per modifica -->
       <modal-modifica 
         v-if="mostraModalModifica" 
@@ -218,6 +219,6 @@ const ListaMovimenti = {
         @chiudi="chiudiModalModifica"
         @salva="confermaModifica"
       />
-    </div>
+    </teleport>
   `
 }

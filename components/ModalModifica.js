@@ -8,14 +8,26 @@ const ModalModifica = {
     }
   },
   emits: ['chiudi', 'salva'],  setup(props, { emit }) {
-    const { ref, computed } = Vue;
-      const tipo = ref(props.movimento.tipo)
+    const { ref, computed } = Vue;    const tipo = ref(props.movimento.tipo)
     const categoria = ref(props.movimento.categoria)
     const importo = ref(props.movimento.importo)
     const data = ref(props.movimento.data)
     const frequenza = ref(props.movimento.frequenza)
     const persona = ref(props.movimento.persona)
     const descrizione = ref(props.movimento.descrizione || '')
+    
+    // Funzioni per formattazione date
+    function formatDateForDisplay(dateStr) {
+      if (!dateStr) return ''
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })
+    }
+    
+    const dataVisualizzata = ref(formatDateForDisplay(props.movimento.data))
     
     const formValido = computed(() => {
       return (
@@ -47,18 +59,19 @@ const ModalModifica = {
     
     function chiudiModal() {
       emit('chiudi')
-    }
-      return {
+    }    return {
       tipo,
       categoria,
       importo,
       data,
+      dataVisualizzata,
       frequenza,
       persona,
       descrizione,
       formValido,
       salvaModifiche,
-      chiudiModal
+      chiudiModal,
+      formatDateForDisplay
     }
   },
   template: `
@@ -118,15 +131,22 @@ const ModalModifica = {
                   required
                 />
               </div>
-              
-              <div class="form-group">
+                <div class="form-group">
                 <label for="data-mod">Data</label>
-                <input 
-                  type="date" 
-                  id="data-mod" 
-                  v-model="data" 
-                  required
-                />
+                <div class="data-input-wrapper">
+                  <input 
+                    type="date" 
+                    id="data-mod" 
+                    v-model="data" 
+                    required
+                    class="data-input-hidden"
+                    @change="dataVisualizzata = formatDateForDisplay(data)"
+                  />
+                  <div class="data-input-display">
+                    {{ dataVisualizzata }}
+                    <i class="fas fa-calendar-alt"></i>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -139,14 +159,25 @@ const ModalModifica = {
                 <option value="mensile">Mensile</option>
                 <option value="annuale">Annuale</option>
               </select>
-            </div>
-              <!-- Persona -->
+            </div>            <!-- Persona -->
             <div class="form-group">
               <label for="persona-mod">Persona</label>
               <input 
                 type="text" 
                 id="persona-mod" 
                 v-model="persona" 
+                required
+              />
+            </div>
+            
+            <!-- Descrizione -->
+            <div class="form-group">
+              <label for="descrizione-mod">Descrizione</label>
+              <input 
+                type="text" 
+                id="descrizione-mod" 
+                v-model="descrizione" 
+                placeholder="Es: Spesa settimanale al supermercato" 
                 required
               />
             </div>

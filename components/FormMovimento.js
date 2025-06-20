@@ -24,14 +24,32 @@ const FormMovimento = {
       'Regalo', 
       'Altro'
     ]
+      const oggi = new Date().toISOString().split('T')[0]
     
-    const oggi = new Date().toISOString().split('T')[0]
-      // Stato form
+    // Funzioni per formattazione date
+    function formatDateForDisplay(dateStr) {
+      if (!dateStr) return ''
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })
+    }
+    
+    function formatDateForInput(dateStr) {
+      if (!dateStr) return ''
+      const date = new Date(dateStr)
+      return date.toISOString().split('T')[0]
+    }
+    
+    // Stato form
     const tipo = ref(props.movimentoDaModificare?.tipo || 'uscita')
     const categoria = ref(props.movimentoDaModificare?.categoria || '')
     const categoriaPersonalizzata = ref('')
     const importo = ref(props.movimentoDaModificare?.importo || '')
     const data = ref(props.movimentoDaModificare?.data || oggi)
+    const dataVisualizzata = ref(formatDateForDisplay(props.movimentoDaModificare?.data || oggi))
     const frequenza = ref(props.movimentoDaModificare?.frequenza || 'una_tantum')
     const persona = ref(props.movimentoDaModificare?.persona || '')
     const personaPersonalizzata = ref('')
@@ -58,8 +76,7 @@ const FormMovimento = {
         descrizione.value.trim() !== '' // La descrizione è obbligatoria
       )
     })
-      // Funzione di salvataggio
-    function salvaMovimento() {
+      // Funzione di salvataggio    function salvaMovimento() {
       if (!formValido.value) return
       
       const nuovoMovimento = {
@@ -80,21 +97,23 @@ const FormMovimento = {
       categoriaPersonalizzata.value = ''
       importo.value = ''
       data.value = oggi
+      dataVisualizzata.value = formatDateForDisplay(oggi)
       frequenza.value = 'una_tantum'
       persona.value = ''
       personaPersonalizzata.value = ''
       descrizione.value = ''
     }
-    
-    return {
+      return {
       tipo,
       categoria,
       categoriaPersonalizzata,
       importo,
       data,
+      dataVisualizzata,
       frequenza,
       persona,
       personaPersonalizzata,
+      descrizione,
       opzioniCategorie,
       opzioniPersone,
       formValido,
@@ -170,15 +189,21 @@ const FormMovimento = {
                 required
               />
             </div>
-            
-            <div class="form-group">
-              <label for="data">Data</label>
-              <input 
-                type="date" 
-                id="data" 
-                v-model="data" 
-                required
-              />
+              <div class="form-group">
+              <label for="data">Data</label>              <div class="data-input-wrapper">
+                <input 
+                  type="date" 
+                  id="data" 
+                  v-model="data" 
+                  required
+                  class="data-input-hidden"
+                  @change="dataVisualizzata = formatDateForDisplay(data)"
+                />
+                <div class="data-input-display">
+                  {{ dataVisualizzata }}
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+              </div>
             </div>
           </div>
           

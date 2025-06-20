@@ -27,11 +27,9 @@ const App = {
 
     const persone = computed(() => {
       return [...new Set(movimenti.value.map(m => m.persona))];
-    });
-
-    const anni = computed(() => {
+    });    const anni = computed(() => {
       return [...new Set(movimenti.value.map(m => {
-        return new Date(m.data).getFullYear();
+        return new Date(m.data).getFullYear().toString();
       }))].sort((a, b) => b - a); // Ordine decrescente
     });
 
