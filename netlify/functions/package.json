@@ -1,0 +1,10 @@
+{
+  "name": "spese-familiari-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions per Spese Familiari",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "@netlify/blobs": "^6.0.0"
+  }
+}
