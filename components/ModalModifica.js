@@ -5,7 +5,8 @@ const ModalModifica = {
     movimento: {
       type: Object,
       required: true
-    }  },
+    }
+  },
   emits: ['chiudi', 'salva'],
   setup(props, { emit }) {
     const { ref, computed } = Vue;
