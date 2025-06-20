@@ -1,5 +1,5 @@
 // netlify/functions/recuperaDati.js
-const { createClient } = require('@netlify/blobs');
+const { getStore } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
   // Abilita CORS
@@ -27,8 +27,7 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ error: 'Metodo non permesso' })
       };
     }    // Accedi al Blobs Store
-    const client = createClient(context);
-    const store = client.get('spese-familiari');
+    const store = getStore({ name: 'spese-familiari' });
     
     try {
       // Usa una chiave comune per tutti gli utenti

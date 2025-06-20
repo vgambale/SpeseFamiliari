@@ -1,29 +1,52 @@
 /* Fix per i bottoni non cliccabili */
-button, .btn, [role="button"] {
-  position: relative;
-  z-index: 1;
+button, .btn, [role="button"], a, .tab, 
+input[type="button"], input[type="submit"], input[type="reset"] {
+  position: relative !important;
+  z-index: 10 !important;
   cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+/* Fix per altri controlli form come select e checkbox */
+select, input[type="checkbox"], input[type="radio"], option {
+  cursor: pointer !important;
+  pointer-events: auto !important; 
+  z-index: 10 !important;
+  position: relative !important;
+  user-select: auto !important;
+}
+
+/* Rimuovi eventuali overlay che bloccano i click */
+.container::before, .container::after,
+.tabs::before, .tabs::after,
+.card::before, .card::after {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Assicura che i container non interferiscano con gli eventi */
+.container, .tabs, .card, .filter-item {
   pointer-events: auto !important;
 }
 
-.tab {
-  cursor: pointer !important;
-  pointer-events: auto !important;
+/* Stile sui hover per feedback visivo */
+button:hover, .btn:hover, .tab:hover, [role="button"]:hover,
+input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover {
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Fix per gli elementi cliccabili in generale */
-a, select, input, checkbox, radio, option, .clickable {
-  cursor: pointer !important;
-  pointer-events: auto !important;
+/* Stile sui active per feedback visivo */
+button:active, .btn:active, .tab:active, [role="button"]:active,
+input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active {
+  opacity: 1 !important;
+  transform: translateY(1px) !important;
 }
 
-/* Feedback visivo per gli elementi interattivi */
-button:hover, .btn:hover, .tab:hover, [role="button"]:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-button:active, .btn:active, .tab:active, [role="button"]:active {
-  opacity: 1;
-  transform: translateY(1px);
+/* Fix specifico per select (dropdown) */
+select {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  -moz-appearance: auto !important;
 }

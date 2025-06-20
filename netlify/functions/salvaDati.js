@@ -1,5 +1,5 @@
 // netlify/functions/salvaDati.js
-const { createClient } = require('@netlify/blobs');
+const { getStore } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
   // Abilita CORS
@@ -29,10 +29,8 @@ exports.handler = async (event, context) => {
     }
 
     // Estrai i dati dal corpo della richiesta
-    const data = JSON.parse(event.body);
-      // Accedi al Blobs Store
-    const client = createClient(context);
-    const store = client.get('spese-familiari');
+    const data = JSON.parse(event.body);    // Accedi al Blobs Store
+    const store = getStore({ name: 'spese-familiari' });
     
     // Salva i dati con una chiave comune per tutti gli utenti
     const key = 'dati-condivisi';

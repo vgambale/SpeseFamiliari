@@ -1,4 +1,4 @@
-// Componente App principale
+// Componente App principaled
 
 const App = {
   components: {
