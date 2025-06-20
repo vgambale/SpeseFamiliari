@@ -5,10 +5,12 @@ const ModalModifica = {
     movimento: {
       type: Object,
       required: true
-    }
-  },
-  emits: ['chiudi', 'salva'],  setup(props, { emit }) {
-    const { ref, computed } = Vue;    const tipo = ref(props.movimento.tipo)
+    }  },
+  emits: ['chiudi', 'salva'],
+  setup(props, { emit }) {
+    const { ref, computed } = Vue;
+    
+    const tipo = ref(props.movimento.tipo)
     const categoria = ref(props.movimento.categoria)
     const importo = ref(props.movimento.importo)
     const data = ref(props.movimento.data)

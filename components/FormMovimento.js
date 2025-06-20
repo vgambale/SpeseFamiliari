@@ -7,9 +7,9 @@ const FormMovimento = {
     movimentoDaModificare: {
       type: Object,
       default: null
-    }
-  },
-  emits: ['salva'],  setup(props, { emit }) {
+    }  },
+  emits: ['salva'],
+  setup(props, { emit }) {
     const { ref, computed } = Vue;
     
     const categoriePreDefinite = [
@@ -22,9 +22,9 @@ const FormMovimento = {
       'Abbigliamento', 
       'Stipendio', 
       'Regalo', 
-      'Altro'
-    ]
-      const oggi = new Date().toISOString().split('T')[0]
+      'Altro'    ]
+    
+    const oggi = new Date().toISOString().split('T')[0]
     
     // Funzioni per formattazione date
     function formatDateForDisplay(dateStr) {
@@ -101,15 +101,14 @@ const FormMovimento = {
       frequenza.value = 'una_tantum'
       persona.value = ''
       personaPersonalizzata.value = ''
-      descrizione.value = ''
-    }
-      return {
+      descrizione.value = ''    }
+    
+    return {
       tipo,
       categoria,
       categoriaPersonalizzata,
       importo,
-      data,
-      dataVisualizzata,
+      data,      dataVisualizzata,
       frequenza,
       persona,
       personaPersonalizzata,
@@ -117,7 +116,8 @@ const FormMovimento = {
       opzioniCategorie,
       opzioniPersone,
       formValido,
-      salvaMovimento
+      salvaMovimento,
+      formatDateForDisplay
     }
   },
   template: `

@@ -8,9 +8,9 @@ const ListaMovimenti = {
     movimenti: {
       type: Array,
       required: true
-    }
-  },
-  emits: ['modifica', 'elimina'],  setup(props, { emit }) {
+    }  },
+  emits: ['modifica', 'elimina'],
+  setup(props, { emit }) {
     const { ref, computed } = Vue;
     
     const movimentoSelezionato = ref(null)
@@ -208,7 +208,8 @@ const ListaMovimenti = {
               </td>
             </tr>
           </tbody>
-        </table>      </div>
+        </table>
+      </div>
     </div>
     
     <teleport to="body">
