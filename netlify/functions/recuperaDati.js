@@ -1,5 +1,5 @@
 // netlify/functions/recuperaDati.js
-const { getStore } = require('@netlify/blobs');
+const { createClient } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
   // Abilita CORS
@@ -38,14 +38,14 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ error: 'ID utente mancante' })
       };
-    }
-
-    // Accedi al KV Store
-    const store = getStore({ name: 'spese-familiari' });
+    }    // Accedi al Blobs Store
+    const client = createClient(context);
+    const store = client.get('spese-familiari');
     
     try {
       // Recupera i dati associati all'ID utente
-      const movimenti = await store.get(`user-${userId}`);
+      const key = `user-${userId}`;
+      const movimenti = await store.get(key);
       
       // Se non ci sono dati, restituisci un array vuoto
       if (!movimenti) {

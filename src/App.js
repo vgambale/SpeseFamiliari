@@ -207,25 +207,38 @@ const App = {
       
       isLoading.value = true
       errorMessage.value = ''
-      
-      try {
-        const response = await fetch(`/api/recuperaDati?userId=${encodeURIComponent(userId.value)}`)
+        try {
+        // Aggiunge un timeout per evitare attese infinite
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondi di timeout
+        
+        const response = await fetch(`/api/recuperaDati?userId=${encodeURIComponent(userId.value)}`, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
-          throw new Error('Errore durante il recupero dei dati')
+          console.warn(`Risposta server non ok: ${response.status} ${response.statusText}`);
+          throw new Error(`Errore server: ${response.status} ${response.statusText}`);
         }
         
-        const data = await response.json()
+        const data = await response.json();
         
         if (data && Array.isArray(data.movimenti)) {
-          movimenti.value = data.movimenti
+          console.log(`Dati caricati dal server: ${data.movimenti.length} movimenti`);
+          movimenti.value = data.movimenti;
+        } else {
+          console.warn("Formato dati non valido ricevuto dal server", data);
+          movimenti.value = [];
         }
         
       } catch (err) {
-        console.error('Errore nel caricamento dei dati dal server:', err)
-        errorMessage.value = `Errore di caricamento: ${err.message}`
+        console.error('Errore nel caricamento dei dati dal server:', err);
+        errorMessage.value = `Errore di caricamento: ${err.message}`;
         
         // Fallback a localStorage
+        console.log("Utilizzo localStorage come fallback");
         caricaDaLocalStorage()
       } finally {
         isLoading.value = false

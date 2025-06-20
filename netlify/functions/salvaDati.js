@@ -1,5 +1,5 @@
 // netlify/functions/salvaDati.js
-const { getStore } = require('@netlify/blobs');
+const { createClient } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
   // Abilita CORS
@@ -39,13 +39,13 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ error: 'ID utente mancante' })
       };
-    }
-
-    // Accedi al KV Store
-    const store = getStore({ name: 'spese-familiari' });
+    }    // Accedi al Blobs Store
+    const client = createClient(context);
+    const store = client.get('spese-familiari');
     
     // Salva i dati associati all'ID utente
-    await store.set(`user-${userId}`, JSON.stringify(data.movimenti));
+    const key = `user-${userId}`;
+    await store.set(key, JSON.stringify(data.movimenti));
 
     return {
       statusCode: 200,
