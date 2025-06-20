@@ -1,7 +1,7 @@
 build:
   publish: "/"
   functions: "netlify/functions"
-  command: "npm ci && npm run build"
+  command: "npm install && npm run build"
   environment:
     NETLIFY_BLOBS_ENABLED: "true"
 
@@ -19,3 +19,5 @@ plugins:
   - package: '@netlify/blobs'
     inputs:
       enabled: true
+  # Plugin locale per configurare Netlify Blobs
+  - plugin: ./netlify-plugin-blobs.js

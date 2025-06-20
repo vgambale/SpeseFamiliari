@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "autoInstall": true,
+  "store": {
+    "name": "spese-familiari"
+  }
+}
