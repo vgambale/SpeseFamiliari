@@ -1,5 +1,5 @@
 // netlify/functions/recuperaDati.js
-const { getKVStore } = require('@netlify/blobs');
+const { getStore } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
   // Abilita CORS
@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
     }
 
     // Accedi al KV Store
-    const store = getKVStore({ name: 'spese-familiari' });
+    const store = getStore({ name: 'spese-familiari' });
     
     try {
       // Recupera i dati associati all'ID utente

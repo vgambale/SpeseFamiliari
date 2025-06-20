@@ -1,5 +1,5 @@
 // netlify/functions/salvaDati.js
-const { getKVStore } = require('@netlify/blobs');
+const { getStore } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
   // Abilita CORS
@@ -42,7 +42,7 @@ exports.handler = async (event, context) => {
     }
 
     // Accedi al KV Store
-    const store = getKVStore({ name: 'spese-familiari' });
+    const store = getStore({ name: 'spese-familiari' });
     
     // Salva i dati associati all'ID utente
     await store.set(`user-${userId}`, JSON.stringify(data.movimenti));

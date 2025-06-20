@@ -1,0 +1,9 @@
+{
+  "name": "spese-familiari",
+  "version": "1.0.0",
+  "description": "Applicazione per la gestione delle spese familiari",
+  "scripts": {
+    "build": "cd netlify/functions && npm install"
+  },
+  "dependencies": {}
+}
